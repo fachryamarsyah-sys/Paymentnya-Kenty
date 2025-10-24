@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Gateaway By Kenty</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #ff6b6b;
+            --secondary: #4ecdc4;
+            --accent: #ffd166;
+            --dark: #1a1a2e;
+            --light: #f7f7f7;
+            --road: #2d3047;
+        }
+
+        body {
+            background: linear-gradient(-45deg, #1a1a2e, #16213e, #0f3460, #ff6b6b);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .road {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: var(--road);
+            z-index: -1;
+        }
+
+        .road::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: repeating-linear-gradient(
+                90deg,
+                var(--accent) 0,
+                var(--accent) 20px,
+                transparent 20px,
+                transparent 40px
+            );
+            animation: roadMove 2s linear infinite;
+        }
+
+        @keyframes roadMove {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-40px); }
+        }
+
+        .car {
+            position: absolute;
+            bottom: 30px;
+            font-size: 2rem;
+            animation: carDrive 8s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes carDrive {
+            0% { left: -50px; }
+            100% { left: 100%; }
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: rgba(26, 26, 46, 0.85);
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(15px);
+            margin-top: 20px;
+            animation: fadeInUp 1.2s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 70%);
+            animation: rotate 20s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: pulse 3s infinite;
+            position: relative;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 300% 300%;
+            animation: gradientText 5s ease infinite;
+        }
+
+        @keyframes gradientText {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-top: 10px;
+            color: var(--accent);
+        }
+
+        .music-player {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            animation: slideIn 1s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .music-player::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .music-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            z-index: 1;
+        }
+
+        .music-icon {
+            font-size: 32px;
+            animation: rotate 8s linear infinite;
+            color: var(--accent);
+        }
+
+        .payment-section {
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: var(--secondary);
+        }
+
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .payment-method {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 20px;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .payment-method::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.05), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+
+        .payment-method:hover::before {
+            transform: translateX(100%);
+        }
+
+        .payment-method:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .payment-icon {
+            font-size: 28px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .payment-method:hover .payment-icon {
+            transform: scale(1.2) rotate(10deg);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .payment-details {
+            flex: 1;
+        }
+
+        .payment-name {
+            font-weight: bold;
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+
+        .payment-number {
+            font-size: 1.1rem;
+            margin: 8px 0;
+            font-family: monospace;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+        .payment-owner {
+            opacity: 0.8;
+            font-size: 0.95rem;
+        }
+
+        .qris-section {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            animation: fadeIn 2s ease;
+        }
+
+        .qris-image {
+            max-width: 280px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            transition: transform 0.5s ease;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .qris-image:hover {
+            transform: scale(1.08) rotate(2deg);
+        }
+
+        .menu-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .menu-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .menu-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .menu-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--accent);
+        }
+
+        .menu-links {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .menu-link:hover::before {
+            left: 100%;
+        }
+
+        .menu-link:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(10px);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            opacity: 0.7;
+            font-size: 0.95rem;
+            width: 100%;
+        }
+
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .payment-methods {
+                grid-template-columns: 1fr;
+            }
+            
+            .menu-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .music-info {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.5s ease;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- Road and cars animation -->
+    <div class="road"></div>
+    <div class="car" style="animation-delay: 0s;"><i class="fas fa-car"></i></div>
+    <div class="car" style="animation-delay: 2s;"><i class="fas fa-car-side"></i></div>
+    <div class="car" style="animation-delay: 4s;"><i class="fas fa-truck"></i></div>
+    <div class="car" style="animation-delay: 6s;"><i class="fas fa-motorcycle"></i></div>
+
+    <div class="container">
+        <header>
+            <h1 class="floating">Cars Outside</h1>
+            <p class="subtitle">Payment Gateway - Drive Your Dreams</p>
+        </header>
+
+        <div class="music-player">
+            <div class="music-info">
+                <i class="fas fa-music music-icon"></i>
+                <div>
+                    <p>Now Playing: <strong>Cars Outside</strong></p>
+                    <audio id="bgMusic" autoplay loop>
+                        <!-- URL lagu Cars Outside -->
+                        <source src="https://kentjmbutt.edgeone.app/Kendis%20-%20ours%20to%20keep%20(feat.%20adis)%20(Official%20Lyric%20Video)%20[hv-tflI7pM4].mp3" type="audio/mpeg">
+                        Browser Anda tidak mendukung elemen audio.
+                    </audio>
+                </div>
+            </div>
+        </div>
+
+        <div class="payment-section">
+            <h2><i class="fas fa-credit-card floating"></i> Metode Pembayaran</h2>
+            
+            <div class="payment-methods">
+                <div class="payment-method">
+                    <div class="payment-icon"><i class="fas fa-mobile-alt"></i></div>
+                    <div class="payment-details">
+                        <div class="payment-name">DANA</div>
+                        <div class="payment-number">083182576621 
+                            <button class="copy-btn" onclick="copyToClipboard('083182576621')">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                        <div class="payment-owner">A/N: SURYANITA</div>
+                    </div>
+                </div>
+                
+                <div class="payment-method">
+                    <div class="payment-icon"><i class="fab fa-google-wallet"></i></div>
+                    <div class="payment-details">
+                        <div class="payment-name">GOPAY</div>
+                        <div class="payment-number">083182576621 
+                            <button class="copy-btn" onclick="copyToClipboard('083182576621')">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                        <div class="payment-owner">A/N: SURYANITA</div>
+                    </div>
+                </div>
+                
+                <div class="payment-method">
+                    <div class="payment-icon"><i class="fas fa-money-bill-wave"></i></div>
+                    <div class="payment-details">
+                        <div class="payment-name">OVO</div>
+                        <div class="payment-number">TIDAK ADA</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="qris-section">
+                <h3><i class="fas fa-qrcode"></i> QRIS</h3>
+                <img src="https://kentaosj.edgeone.app/20250724_194521.jpg" alt="QR Code" https://kentaosj.edgeone.app/20250724_194521.jpg="qris-image floating">
+                <p style="margin-top: 15px;">Scan QR Code di atas untuk pembayaran</p>
+            </div>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-card">
+                <h3 class="menu-title"><i class="fab fa-whatsapp floating"></i> Grup WhatsApp</h3>
+                <div class="menu-links">
+                    <a href="https://chat.whatsapp.com/KRqvWlwISA0EhCG2vjfs69" class="menu-link" target="_blank">
+                        <i class="fas fa-users"></i> Grup Utama
+                    </a>
+                    <a href="https://chat.whatsapp.com/ErQLC4dIQtA4jUKbwaIDLg" class="menu-link" target="_blank">
+                        <i class="fas fa-gamepad"></i> GRUB BLOXFRUITS
+                    </a>
+                    <a href="https://chat.whatsapp.com/DwtRdIYUk3GACKBImKBqW5" class="menu-link" target="_blank">
+                        <i class="fas fa-code"></i> GRUB FISCHT IT
+                    </a>
+                    <a href="https://chat.whatsapp.com/HTnqbj0q1nJBQmIugUUttC" class="menu-link" target="_blank">
+                        <i class="fas fa-leaf"></i> GRUB PLANT VS BRAINROT
+                    </a>
+                    <a href="#" class="menu-link">
+                        <i class="fas fa-map"></i> GRUB ALL MAP ROBLOX
+                    </a>
+                </div>
+            </div>
+            
+            <div class="menu-card">
+                <h3 class="menu-title"><i class="fas fa-broadcast-tower floating"></i> Saluran Lainnya</h3>
+                <div class="menu-links">
+                    <a href="https://whatsapp.com/channel/0029VbArPLQ0QeahxgB2if33" class="menu-link" target="_blank">
+                        <i class="fab fa-whatsapp"></i> Saluran WhatsApp
+                    </a>
+                    <a href="#" class="menu-link">
+                        <i class="fab fa-youtube"></i> YouTube Channel
+                    </a>
+                    <a href="#" class="menu-link">
+                        <i class="fab fa-instagram"></i> Instagram
+                    </a>
+                    <a href="#" class="menu-link">
+                        <i class="fab fa-tiktok"></i> TikTok
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2023 Cars Outside. All rights reserved.</p>
+    </footer>
+
+    <div class="notification" id="notification">Nomor berhasil disalin!</div>
+
+    <script>
+        // Script untuk memastikan musik diputar otomatis
+        document.addEventListener('DOMContentLoaded', function() {
+            const audio = document.getElementById('bgMusic');
+            audio.volume = 0.4; // Mengatur volume agar tidak terlalu keras
+            
+            // Coba putar musik, jika gagal karena kebijakan autoplay, berikan tombol play
+            const playAudio = () => {
+                audio.play().catch(error => {
+                    console.log('Autoplay prevented:', error);
+                    // Tampilkan tombol play jika autoplay diblokir
+                    const musicPlayer = document.querySelector('.music-player');
+                    musicPlayer.innerHTML = `
+                        <button onclick="enableAudio()" style="background: rgba(255,255,255,0.2); border: none; color: white; paddin
